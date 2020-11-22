@@ -2,8 +2,7 @@
        // Recoit en paramètre la dtaq et la bibliothèque
        //
        ctl-opt DFTACTGRP(*NO) ;
-       dcl-f DSPDTAQ   WORKSTN  SFILE(sfl01:cle01) SFILE(sfl02:cle02)
-       usropn ;
+       dcl-f DSPDTAQE   WORKSTN  SFILE(sfl01:cle01) SFILE(sfl02:cle02);
        // les paramètres recus
        //************************************************************
        // Paramètres reçus
@@ -91,7 +90,7 @@
          DtaqLib char(10);
        end-ds;
 
-      // Message selection info - RDQS0100 nonkeyed queues  RDQS0200 Keyed data
+      // Message selection info - RDQS0100 nonkeyed queues  RDQS0200 Keyed data queues
        dcl-ds rdqs0100DS qualified;
          Selection char(1) inz('A'); //all
          MsgByteRtv int(10)  inz pos(5);  //message bytes to rtv
@@ -199,13 +198,6 @@
        end-pr;
        //***********************************************************************
       /free
-         Monitor ;
-            Open DSPDTAQ  ;
-         On-error ;
-            dsply ('Nécessite un écran 27 * 132') ;
-            *inlr=*on ;
-             Return ;
-         Endmon;
        Mode_hexa=P_fmt='*HEX';
 
        dtq=%trim(%subst(p_dtaq:11))+'/'+%subst(p_dtaq:1:10);
@@ -343,8 +335,8 @@
            for ForCounter = 1 to qmhrdqmDS.MsgRtnCount;
              srTempqDS();
              //viewqDS = %subst(TempqDS: 1);
-             ListEntryPtr = uHeadPtr + ListEntryDS.NextEntry;
              pos=ListEntryDS.NextEntry;
+             ListEntryPtr = uHeadPtr + ListEntryDS.NextEntry;
            endfor;
          endif;
        end-proc ;
@@ -552,4 +544,4 @@
        END-PROC;
 
 
-      /end-free
+      /end-free 
