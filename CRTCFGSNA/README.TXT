@@ -3,6 +3,20 @@
 *    CRTCFGSNA                                                        *
 *---------------------------------------------------------------------*
 
+Vous avez besoin d'utiliser les commandes savrstx
+
+La meilleur solution est de le faire en IP
+Mais si vous êtes en V7R3 ou V7R4 cette option n'existe pas
+de plus cette configuration est plus compliquée, vous devrez configurer un
+Certificat sur l'application
+
+Si vous voulez utiliser SNA voici ce qu'il vous faut faire    
+
+Attention :
+
+Si vous êtes sur une version ultérieure *HPRIP n'existe pas vous devrez 
+configurer en *ANYNET, vous trouverez des exemples sur internet 
+
 Pour le configurer :
 
 Vous devez connaitre :
