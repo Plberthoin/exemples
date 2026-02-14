@@ -1,0 +1,54 @@
+pgm parm(&nom &adresseip)
+/*--------------------------------------------------------------*/
+/* Ce programme créee une configuration SNA pour atteindre un   */
+/* système distant                                              */
+/* utilise *HPRIP, il force par défaut le réseau à APPN         */
+/*                                                              */
+/* Pour obtenir les infos sur votre systéme distant             */
+/*                                                              */
+/* cfgtcp , option 1                                            */
+/* DSPNETA, paramétre SYSNAME , LCLCPNAME , LCLLOCNAME          */
+/*                                                              */
+/* Vous devez faire la même chose sur le systéme distant        */
+/*                                                              */
+/* Contrôler la connexion                                       */
+/*  ==>APING &NOM                                               */
+/*--------------------------------------------------------------*/
+dcl &nom *char 10
+dcl &adresseip *char 15
+/* Mise une place du nom du reseau */
+             CHGNETA    LCLNETID(APPN) ALWHPRTWR(*YES)
+/* Création du controleur *HPRIP */
+             CRTCTLAPPC CTLD('HP' *TCAT %SST(&NOM 1 8)) +
+                          LINKTYPE(*HPRIP) RMTINTNETA(&ADRESSEIP) +
+                          RMTNETID(APPN) RMTCPNAME(&NOM) +
+                          TEXT('Contrôleur, HP' *TCAT &nom)
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Création Contrôleur, HP' *TCAT +
+                          &NOM *BCAT 'impossible') MSGTYPE(*ESCAPE)
+             ENDDO
+/* Création du contrôleur de connexion */
+/* si inexistant */
+             CRTCTLAPPC CTLD(QAPEND0001) LINKTYPE(*VRTAPPN) +
+                          ONLINE(*YES) AUTODLTDEV(31680) +
+                          TEXT('Contrôleur de connexion SNA') +
+                          MSGQ(*SYSVAL)
+             MONMSG     MSGID(CPD2601 CPF2716)
+/* Création de l'unité    de connexion */
+             CRTDEVAPPC DEVD(NEPTUNE) RMTLOCNAME(NEPTUNE) +
+                          ONLINE(*YES) LCLLOCNAME(URANUS) +
+                          RMTNETID(*NETATR) CTL(QAPEND0001) +
+                          MODE(*NETATR) MSGQ(*CTLD) APPN(*YES) +
+                          SNGSSN(*NO) TEXT('Unité, HP' *TCAT &NOM) +
+                          LOCADR(00)
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Création unité,' *BCAT +
+                          &NOM *BCAT 'impossible') MSGTYPE(*ESCAPE)
+             ENDDO
+/* Démarrage du controleur et de l'unité                           */
+             VRYCFG     CFGOBJ(&NOM) CFGTYPE(*DEV) STATUS(*ON)
+             VRYCFG     CFGOBJ(('HP' *TCAT %SST(&NOM 1 8))) +
+                          CFGTYPE(*CTL) STATUS(*ON)
+endpgm

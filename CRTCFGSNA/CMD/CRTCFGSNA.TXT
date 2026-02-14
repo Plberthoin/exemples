@@ -1,0 +1,6 @@
+/* Création configuration SNA */
+             CMD        PROMPT('Création d''une config SNA')
+             PARM       KWD(SYSTEME) TYPE(*NAME) LEN(10) MIN(1) +
+                          PROMPT('Nom du système SNA')
+             PARM       KWD(ADRESSEIP) TYPE(*CHAR) LEN(15) MIN(1) +
+                          PROMPT('Adresse IP du système SNA')
